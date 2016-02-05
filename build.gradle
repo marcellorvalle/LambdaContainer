@@ -1,0 +1,55 @@
+plugins {
+  id "org.sonarqube" version "1.2"
+}
+
+apply plugin: "java"
+apply plugin: "jacoco"
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+sourceSets {
+    main.java.srcDir "src"
+	test.java.srcDir "test"	
+}
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+    }    
+}
+
+task testWithCoverage(dependsOn: ['cleanTest', 'test', 'jacocoTestReport'])
+
+jacoco {
+    toolVersion = "0.7.1.201405082137"
+    reportsDir = file("$buildDir/reports/jacoco")
+}
+
+
+compileJava {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+}
+
+dependencies {
+    compile 'org.jsoup:jsoup:1.+'
+    testCompile 'org.jmockit:jmockit:1.+' //jmockit before junit
+    testCompile 'junit:junit:4.+'
+    testCompile 'org.mockito:mockito-core:1.+'
+}
+
+jar {
+    from configurations.compile.collect { entry -> zipTree(entry) }	
+    manifest.attributes "Main-Class" : "photorist.Photorist"
+}
+
+//Copy all dependencies to lib
+//Use it with IntelliJ
+task copyDeps(type: Copy) {
+    into 'lib'
+    from configurations.testRuntime,
+         configurations.runtime
+}
