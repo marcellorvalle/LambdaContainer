@@ -1,6 +1,4 @@
-package com.mrv.LambdaContainer.Exceptions;
-
-import com.mrv.LambdaContainer.LambdaContainer;
+package com.mrv.lambdacontainer.exceptions;
 
 /**
  * Created by Marcello on 07/02/2016.

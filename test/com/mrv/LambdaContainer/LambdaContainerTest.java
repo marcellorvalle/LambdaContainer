@@ -1,9 +1,8 @@
-package com.mrv.LambdaContainer;
+package com.mrv.lambdacontainer;
 
-import com.mrv.LambdaContainer.Exceptions.LambdaContainerException;
-import com.mrv.LambdaContainer.TestTools.TestImplementation;
-import com.mrv.LambdaContainer.TestTools.TestInterface;
-import com.sun.org.apache.xpath.internal.functions.WrongNumberArgsException;
+import com.mrv.lambdacontainer.exceptions.LambdaContainerException;
+import com.mrv.lambdacontainer.TestTools.TestImplementation;
+import com.mrv.lambdacontainer.TestTools.TestInterface;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

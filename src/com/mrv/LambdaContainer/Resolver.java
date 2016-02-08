@@ -1,4 +1,4 @@
-package com.mrv.LambdaContainer;
+package com.mrv.lambdacontainer;
 
 /**
  * Created by Marcello on 07/02/2016.

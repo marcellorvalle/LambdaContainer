@@ -1,6 +1,6 @@
-package com.mrv.LambdaContainer;
+package com.mrv.lambdacontainer;
 
-import com.mrv.LambdaContainer.Exceptions.LambdaContainerException;
+import com.mrv.lambdacontainer.exceptions.LambdaContainerException;
 
 import java.util.HashMap;
 import java.util.Map;
