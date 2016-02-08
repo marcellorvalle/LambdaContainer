@@ -5,6 +5,12 @@ plugins {
 apply plugin: "java"
 apply plugin: "jacoco"
 
+gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    }
+}
+
 repositories {
     mavenCentral()
     jcenter()

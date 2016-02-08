@@ -1,4 +1,4 @@
-package com.mrv.TestTools;
+package com.mrv.LambdaContainer.TestTools;
 
 /**
  * Simple interface for testing
