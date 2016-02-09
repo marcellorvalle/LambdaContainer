@@ -13,6 +13,7 @@ class SingletonResolver<T>
         this.internal = internal;
     }
 
+    @Override
     public T resolve() {
         if (instance == null) {
             instance = internal.resolve();
