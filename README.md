@@ -46,6 +46,32 @@ container.addResolution(
 );
 ```
 
+###Autobuild 
+
+If a class has no resolution defined the container will try to instantiate its dependencies and retrieve it.
+
+```java
+public class ClassWithNoResolution() {
+        public ClassWithNoResolution (SomeInterface service1, OtherInterface service2) {
+                //(...)
+        }
+}
+
+container.addResolution(
+        SomeInterface.class,
+        () -> new SomeImplementation();
+);
+
+container.addResolution(
+        OtherInterface.class,
+        () -> new OtherImplementation();
+);
+
+//will work
+ClassWithNoResolution obj = container.resolve(ClassWithNoResolution.class);
+
+```
+
 ###Single instance support 
 Will retrieve the same instance each time an implementation is needed.
 
