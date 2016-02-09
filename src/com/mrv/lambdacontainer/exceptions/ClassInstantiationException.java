@@ -1,7 +1,7 @@
 package com.mrv.lambdacontainer.exceptions;
 
 /**
- * Created by Marcello on 07/02/2016.
+ * Exception used when a class can not be instantiated.
  */
 public class ClassInstantiationException extends Exception {
     public ClassInstantiationException(String message) {

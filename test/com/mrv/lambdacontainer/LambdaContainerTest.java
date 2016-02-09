@@ -12,6 +12,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 /**
  * Injection container that uses Lambda operators.
@@ -35,7 +37,7 @@ public class LambdaContainerTest {
 
     @Test
     public void testCreateDefaultInstanceComposedMapping() throws ClassInstantiationException {
-        cont.addResolver(
+        cont.addResolution(
                 TestInterface.class,
                 () -> new TestImplementation()
         );
@@ -66,9 +68,9 @@ public class LambdaContainerTest {
 
     @Test
     public void testAddResolverThrowsExceptionWhenDuplicated() {
-        cont.addResolver(void.class, () -> null);
+        cont.addResolution(void.class, () -> null);
         exception.expect(LambdaContainerException.class);
-        cont.addResolver(void.class, () -> null);
+        cont.addResolution(void.class, () -> null);
     }
 
     @Test
@@ -79,12 +81,58 @@ public class LambdaContainerTest {
 
     @Test
     public void testResolution() {
-        cont.addResolver(
+        cont.addResolution(
                 TestInterface.class,
                 () -> new TestImplementation()
         );
 
-        TestInterface interfc = cont.resolve(TestInterface.class);
-        assertTrue(interfc instanceof TestImplementation);
+        TestInterface implementation = cont.resolve(TestInterface.class);
+        assertTrue(implementation instanceof TestImplementation);
+
+        //two different instances
+        assertNotSame(
+                implementation,
+                cont.resolve(TestInterface.class)
+        );
+    }
+
+    /**
+     * A little bit on integration testing here...
+     */
+    @Test
+    public void testExtent() {
+        TestImplementation impl = mock(TestImplementation.class);
+
+        //add some indirection
+        cont.addResolution(
+                TestInterface.class,
+                () -> cont.resolve(TestImplementation.class)
+        );
+
+        cont.addResolution(
+                TestImplementation.class,
+                () -> impl
+        );
+
+        cont.extend(
+                TestImplementation.class,
+                (original) -> {
+                    //(...) extension methods
+                    original.doSomething();
+                    return original;
+                }
+        );
+
+        cont.resolve(TestInterface.class);
+        verify(impl).doSomething();
+    }
+
+    @Test
+    public void testExtendThrowsExceptionWhenClassDefinitionNotFound() {
+        exception.expect(LambdaContainerException.class);
+        cont.extend(
+                TestInterface.class,
+                (original) -> original
+        );
     }
 }

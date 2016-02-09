@@ -127,3 +127,4 @@ $RECYCLE.BIN/
 # SonarQube - I am using Gradle to generate it
 .sonar
 sonar-project.properties
+.sourcemeter

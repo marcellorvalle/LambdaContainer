@@ -15,6 +15,9 @@ import java.util.List;
 public class LambdaContainer {
     private final Map<Class<?>, Resolver<?>> resolvers;
 
+    /**
+     * Default constructor
+     */
     public LambdaContainer() {
         resolvers = new HashMap<>();
     }
@@ -26,7 +29,7 @@ public class LambdaContainer {
      * @param resolver
      * @param <T> The class/interface class
      */
-    public <T> void addResolver(Class<T> element, Resolver<? extends T> resolver) {
+    public <T> void addResolution(Class<T> element, Resolver<? extends T> resolver) {
         if (resolvers.containsKey(element)) {
             throw new LambdaContainerException("Element already exists inside container: " + element.getName());
         }
@@ -35,8 +38,40 @@ public class LambdaContainer {
     }
 
     /**
+     * Add a resolver to an specific class or interface. There will be one single
+     * class instance (Singleton) during the container lifetime.
+     * @param element
+     * @param resolver
+     * @param <T>
+     */
+    public <T> void addSingleResolution(Class<T> element, Resolver<? extends T> resolver) {
+        addResolution(
+                element,
+                new SingletonResolver<>(resolver)
+        );
+    }
+
+    /**
+     * Extend the behavior used with object instantiation.
+     * @param element
+     * @param extension
+     * @param <T>
+     */
+    @SuppressWarnings("unchecked")
+    public <T> void extend(Class<T> element, Extension<T> extension) {
+        if (!resolvers.containsKey(element)) {
+            throw new LambdaContainerException("Element not found inside container: " + element.getName());
+        }
+
+        Resolver<T> original = (Resolver<T>) resolvers.get(element);
+        Resolver<T> extended = new Extender<>(original, extension);
+
+        resolvers.put(element, extended);
+    }
+
+    /**
      * Try to resolve the specified element. Suppressing unchecked warnings
-     * due to the limits imposed by "addResolver".
+     * due to the limits imposed by "addResolution".
      * @param aClass
      * @param <T>
      * @return instance of T.
@@ -59,6 +94,7 @@ public class LambdaContainer {
      * @return
      * @throws ClassInstantiationException When it is not possible to instantiate.
      */
+    @SuppressWarnings("unchecked")
     protected <T> T createDefaultInstance(Class<T> aClass)
             throws ClassInstantiationException {
 
@@ -107,6 +143,7 @@ public class LambdaContainer {
      * @return
      * @throws ClassInstantiationException
      */
+    @SuppressWarnings("unchecked")
     private <T> T getInstance(Class<T> element)
             throws ClassInstantiationException {
         if (resolvers.containsKey(element)) {
