@@ -27,6 +27,18 @@ public class LambdaContainerTest {
         cont = new LambdaContainer();
     }
 
+
+    @Test
+    public void nada() {
+        cont.addSingletonResolution(
+                TestInterface.class,
+                () -> new TestImplementation()
+        );
+
+        cont.resolve(TestInterface.class);
+        cont.resolve(TestInterface.class);
+    }
+
     @Test
     public void testCreateDefaultInstanceSimple() throws ClassInstantiationException {
         TestInterface interfc = cont.createDefaultInstance(TestImplementation.class);
@@ -35,7 +47,7 @@ public class LambdaContainerTest {
 
     @Test
     public void testCreateDefaultInstanceComposedMapping() throws ClassInstantiationException {
-        cont.addResolver(
+        cont.addResolution(
                 TestInterface.class,
                 () -> new TestImplementation()
         );
@@ -66,9 +78,9 @@ public class LambdaContainerTest {
 
     @Test
     public void testAddResolverThrowsExceptionWhenDuplicated() {
-        cont.addResolver(void.class, () -> null);
+        cont.addResolution(void.class, () -> null);
         exception.expect(LambdaContainerException.class);
-        cont.addResolver(void.class, () -> null);
+        cont.addResolution(void.class, () -> null);
     }
 
     @Test
@@ -79,12 +91,18 @@ public class LambdaContainerTest {
 
     @Test
     public void testResolution() {
-        cont.addResolver(
+        cont.addResolution(
                 TestInterface.class,
                 () -> new TestImplementation()
         );
 
-        TestInterface interfc = cont.resolve(TestInterface.class);
-        assertTrue(interfc instanceof TestImplementation);
+        TestInterface implementation = cont.resolve(TestInterface.class);
+        assertTrue(implementation instanceof TestImplementation);
+
+        //two different instances
+        assertNotSame(
+                implementation,
+                cont.resolve(TestInterface.class)
+        );
     }
 }

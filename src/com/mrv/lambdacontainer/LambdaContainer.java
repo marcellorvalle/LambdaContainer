@@ -26,7 +26,7 @@ public class LambdaContainer {
      * @param resolver
      * @param <T> The class/interface class
      */
-    public <T> void addResolver(Class<T> element, Resolver<? extends T> resolver) {
+    public <T> void addResolution(Class<T> element, Resolver<? extends T> resolver) {
         if (resolvers.containsKey(element)) {
             throw new LambdaContainerException("Element already exists inside container: " + element.getName());
         }
@@ -34,9 +34,16 @@ public class LambdaContainer {
         resolvers.put(element, resolver);
     }
 
+    public <T> void addSingletonResolution(Class<T> element, Resolver<? extends T> resolver) {
+        addResolution(
+                element,
+                new SingletonResolver<>(resolver)
+        );
+    }
+
     /**
      * Try to resolve the specified element. Suppressing unchecked warnings
-     * due to the limits imposed by "addResolver".
+     * due to the limits imposed by "addResolution".
      * @param aClass
      * @param <T>
      * @return instance of T.
@@ -59,6 +66,7 @@ public class LambdaContainer {
      * @return
      * @throws ClassInstantiationException When it is not possible to instantiate.
      */
+    @SuppressWarnings("unchecked")
     protected <T> T createDefaultInstance(Class<T> aClass)
             throws ClassInstantiationException {
 
@@ -107,6 +115,7 @@ public class LambdaContainer {
      * @return
      * @throws ClassInstantiationException
      */
+    @SuppressWarnings("unchecked")
     private <T> T getInstance(Class<T> element)
             throws ClassInstantiationException {
         if (resolvers.containsKey(element)) {
