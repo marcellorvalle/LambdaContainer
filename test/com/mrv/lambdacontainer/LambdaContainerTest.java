@@ -12,6 +12,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 /**
  * Injection container that uses Lambda operators.
@@ -25,18 +27,6 @@ public class LambdaContainerTest {
     @Before
     public void setUp() {
         cont = new LambdaContainer();
-    }
-
-
-    @Test
-    public void nada() {
-        cont.addSingletonResolution(
-                TestInterface.class,
-                () -> new TestImplementation()
-        );
-
-        cont.resolve(TestInterface.class);
-        cont.resolve(TestInterface.class);
     }
 
     @Test
@@ -103,6 +93,46 @@ public class LambdaContainerTest {
         assertNotSame(
                 implementation,
                 cont.resolve(TestInterface.class)
+        );
+    }
+
+    /**
+     * A little bit on integration testing here...
+     */
+    @Test
+    public void testExtent() {
+        TestImplementation impl = mock(TestImplementation.class);
+
+        //add some indirection
+        cont.addResolution(
+                TestInterface.class,
+                () -> cont.resolve(TestImplementation.class)
+        );
+
+        cont.addResolution(
+                TestImplementation.class,
+                () -> impl
+        );
+
+        cont.extend(
+                TestImplementation.class,
+                (original) -> {
+                    //(...) extension methods
+                    original.doSomething();
+                    return original;
+                }
+        );
+
+        cont.resolve(TestInterface.class);
+        verify(impl).doSomething();
+    }
+
+    @Test
+    public void testExtendThrowsExceptionWhenClassDefinitionNotFound() {
+        exception.expect(LambdaContainerException.class);
+        cont.extend(
+                TestInterface.class,
+                (original) -> original
         );
     }
 }

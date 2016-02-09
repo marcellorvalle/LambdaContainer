@@ -15,6 +15,9 @@ import java.util.List;
 public class LambdaContainer {
     private final Map<Class<?>, Resolver<?>> resolvers;
 
+    /**
+     * Default constructor
+     */
     public LambdaContainer() {
         resolvers = new HashMap<>();
     }
@@ -34,11 +37,36 @@ public class LambdaContainer {
         resolvers.put(element, resolver);
     }
 
-    public <T> void addSingletonResolution(Class<T> element, Resolver<? extends T> resolver) {
+    /**
+     * Add a resolver to an specific class or interface. There will be one single
+     * class instance (Singleton) during the container lifetime.
+     * @param element
+     * @param resolver
+     * @param <T>
+     */
+    public <T> void addSingleResolution(Class<T> element, Resolver<? extends T> resolver) {
         addResolution(
                 element,
                 new SingletonResolver<>(resolver)
         );
+    }
+
+    /**
+     * Extend the behavior used with object instantiation.
+     * @param element
+     * @param extension
+     * @param <T>
+     */
+    @SuppressWarnings("unchecked")
+    public <T> void extend(Class<T> element, Extension<T> extension) {
+        if (!resolvers.containsKey(element)) {
+            throw new LambdaContainerException("Element not found inside container: " + element.getName());
+        }
+
+        Resolver<T> original = (Resolver<T>) resolvers.get(element);
+        Resolver<T> extended = new Extender<>(original, extension);
+
+        resolvers.put(element, extended);
     }
 
     /**
