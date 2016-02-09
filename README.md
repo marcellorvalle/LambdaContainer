@@ -1,11 +1,11 @@
 # LambdaContainer
-Yet another DIC(with support of lambda expressions).
+Yet another DIC(Powered with lambda expressions).
 
 This is a personal project and my objective is to learn a bit more about Java + JUnit + Gradle. 
 
 There are some nice solutions like Spring, Google Guice and Dagger but sometimes they seem overcomplicated for my needs. I also dislikes the excessive use of @Inject (from JSR-330) annotation at the target Objects. It's a personal opinion but I think the least one class know about how it is going to be used, the better. Also, I have a lot of FUN with DIY projects.
 
-I decided to use Lambda Expressions motivated by [Fabien Potencier's work](http://fabien.potencier.org/) on [Twittee](http://twittee.org/) and his bigger brother [Pimple](http://pimple.sensiolabs.org/), both using PHP.
+I decided to use Lambda Expressions motivated by [Fabien Potencier's work](http://fabien.potencier.org/) on [Twittee](http://twittee.org/) and its bigger brother [Pimple](http://pimple.sensiolabs.org/), both using PHP.
 
 ##Basic functionality
 
