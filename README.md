@@ -7,29 +7,95 @@ There are some nice solutions like Spring, Google Guice and Dagger but sometimes
 
 I decided to use Lambda Expressions motivated by [Fabien Potencier's work](http://fabien.potencier.org/) on [Twittee](http://twittee.org/) and his bigger brother [Pimple](http://pimple.sensiolabs.org/), both using PHP.
 
-My goal is to create something that works like that:
+##Basic functionality
+
+###Simple scenario
+Will retrieve a new instance each time an implementation is needed.
 
 ```java
 Container container = new Container();
-
-//Simple scenario
-container.addMap(
+container.addResolution(
         SomeServiceInterface.class,
-        (c) -> new SomeServiceImplementation();
+        () -> new SomeServiceImplementation();
 );
 
 SomeServiceInterface some = container.resolve(SomeServiceInterface.class);
 some.doYourJob();
 
-//Complex scenario
-container.addMap(
+//different instances
+assertNotSame(
+        container.resolve(SomeServiceInterface.class), 
+        container.resolve(SomeServiceInterface.class)
+);
+```
+
+###Complex scenario
+Can be used to configure complex objects.
+
+```java
+container.addResolution(
         SomeServiceInterface.class,
-        (c) -> {
+        () -> {
               SomeServiceImplementation some = new SomeServiceImplementation(c.resolve(OtherInterface.class));
-              some->setParameterA(c.get("parameterA"));
+              some->setParameterA(someParameter);
+              some->setParameterB(otherParameter);
               some->callMethod();
               //(...)
               return some;
         }
 );
 ```
+
+###Single instance support 
+Will retrieve the same instance each time an implementation is needed.
+
+```java
+container.addSingleResolution(
+        SomeServiceInterface.class,
+        () -> new SomeServiceImplementation();
+);
+
+//Same instances
+assertSame(
+        container.resolve(SomeServiceInterface.class), 
+        container.resolve(SomeServiceInterface.class)
+);
+```
+###Resolution extension
+Used to add new extra configuration via decoration.
+
+```java
+container.addResolution(
+        SomeServiceInterface.class,
+        () -> new SomeServiceImplementation();
+);
+
+container.extend(
+        SomeServiceInterface.class,
+        (original) -> {
+                original.setParameterA(someParameter);
+                return original;
+        }
+)
+SomeServiceInterface someService = container.resolve(SomeServiceInterfave.class);
+
+assertEquals(someParameter, someService.getParameterA());
+```
+
+## What to do next...
+
+* Support to @Inject annotation
+* Simplify resolution insertion when there is no subclassing or interface implementation:
+
+ ```java
+//instead of 
+container.addResolution(
+        SomeServiceImplementation.class,
+        () -> new SomeServiceImplementation();
+);
+
+//Should be nice to have:
+container.addResolution(
+        () -> new SomeServiceImplementation();
+);
+ ```
