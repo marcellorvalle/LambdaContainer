@@ -30,6 +30,15 @@ public class LambdaContainerTest {
     }
 
     @Test
+    public void testSetScenario() {
+        Scenario scenario = mock(Scenario.class);
+        cont.setScenario(scenario);
+
+        verify(scenario).setContainer(cont);
+        verify(scenario).setResolutions();
+    }
+
+    @Test
     public void testCreateDefaultInstanceSimple() throws ClassInstantiationException {
         TestInterface interfc = cont.createDefaultInstance(TestImplementation.class);
         assertTrue(interfc instanceof TestImplementation);
@@ -100,7 +109,7 @@ public class LambdaContainerTest {
      * A little bit on integration testing here...
      */
     @Test
-    public void testExtent() {
+    public void testExtend() {
         TestImplementation impl = mock(TestImplementation.class);
 
         //add some indirection
@@ -134,5 +143,19 @@ public class LambdaContainerTest {
                 TestInterface.class,
                 (original) -> original
         );
+    }
+
+    @Test
+    public void testClear() {
+        cont.addResolution(
+                TestInterface.class,
+                () -> new TestImplementation()
+        );
+
+        cont.resolve(TestInterface.class);
+        cont.clear();
+
+        exception.expect(LambdaContainerException.class);
+        cont.resolve(TestInterface.class);
     }
 }

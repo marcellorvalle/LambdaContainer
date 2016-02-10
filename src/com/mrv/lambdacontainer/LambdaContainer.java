@@ -16,10 +16,19 @@ public class LambdaContainer {
     private final Map<Class<?>, Resolver<?>> resolvers;
 
     /**
-     * Default constructor
-     */
+    * Default constructor
+    */
     public LambdaContainer() {
         resolvers = new HashMap<>();
+    }
+
+    /**
+     * Set the current resolution scenario.
+     * @param scenario
+     */
+    public void setScenario(Scenario scenario) {
+        scenario.setContainer(this);
+        scenario.setResolutions();
     }
 
     /**
@@ -28,13 +37,18 @@ public class LambdaContainer {
      * @param element a class or interface
      * @param resolver
      * @param <T> The class/interface class
+     * @throws LambdaContainerException If the element already exists.
      */
-    public <T> void addResolution(Class<T> element, Resolver<? extends T> resolver) {
+    protected <T> void addResolution(Class<T> element, Resolver<? extends T> resolver) {
         if (resolvers.containsKey(element)) {
-            throw new LambdaContainerException("Element already exists inside container: " + element.getName());
+            StringBuilder sb = new StringBuilder("Element already exists inside container: ").
+            append(element.getName()).
+            append(". Use the override function if you want to explicity change the resolver.");
+
+            throw new LambdaContainerException(sb.toString());
         }
 
-        resolvers.put(element, resolver);
+        this.override(element, resolver);
     }
 
     /**
@@ -44,11 +58,21 @@ public class LambdaContainer {
      * @param resolver
      * @param <T>
      */
-    public <T> void addSingleResolution(Class<T> element, Resolver<? extends T> resolver) {
+    protected <T> void addSingleResolution(Class<T> element, Resolver<? extends T> resolver) {
         addResolution(
                 element,
                 new SingletonResolver<>(resolver)
         );
+    }
+
+    /**
+     * Add the resolver and  overwrite the old one if it exists.
+     * @param element
+     * @param resolver
+     * @param <T>
+     */
+    protected <T> void override(Class<T> element, Resolver<? extends T> resolver) {
+        resolvers.put(element, resolver);
     }
 
     /**
@@ -58,7 +82,7 @@ public class LambdaContainer {
      * @param <T>
      */
     @SuppressWarnings("unchecked")
-    public <T> void extend(Class<T> element, Extension<T> extension) {
+    protected <T> void extend(Class<T> element, Extension<T> extension) {
         if (!resolvers.containsKey(element)) {
             throw new LambdaContainerException("Element not found inside container: " + element.getName());
         }
@@ -67,6 +91,13 @@ public class LambdaContainer {
         Resolver<T> extended = new Extender<>(original, extension);
 
         resolvers.put(element, extended);
+    }
+
+    /**
+     * Clear all the defined resolvers.
+     */
+    protected void clear() {
+        resolvers.clear();
     }
 
     /**
