@@ -18,15 +18,15 @@ import static org.mockito.Mockito.verify;
 /**
  * Injection container that uses Lambda operators.
  */
-public class LambdaContainerTest {
-    private LambdaContainer cont;
+public class ContainerTest {
+    private Container cont;
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
 
     @Before
     public void setUp() {
-        cont = new LambdaContainer();
+        cont = new Container();
     }
 
     @Test

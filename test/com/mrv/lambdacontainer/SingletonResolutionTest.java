@@ -10,12 +10,12 @@ import static org.junit.Assert.*;
 /**
  * Created by Marcello on 09/02/2016.
  */
-public class SingletonResolverTest {
-    private SingletonResolver<TestInterface> resolver;
+public class SingletonResolutionTest {
+    private SingletonResolution<TestInterface> resolver;
 
     @Before
     public void setUp() throws Exception {
-        resolver = new SingletonResolver<>(
+        resolver = new SingletonResolution<>(
                 () -> new TestImplementation()
         );
     }

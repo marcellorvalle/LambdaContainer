@@ -3,7 +3,7 @@ package com.mrv.lambdacontainer;
 import com.mrv.lambdacontainer.TestTools.TestImplementation;
 import com.mrv.lambdacontainer.TestTools.TestInterface;
 import com.mrv.lambdacontainer.interfaces.Extension;
-import com.mrv.lambdacontainer.interfaces.Resolver;
+import com.mrv.lambdacontainer.interfaces.Resolution;
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.Mockito.*;
@@ -13,17 +13,17 @@ import static org.mockito.Mockito.*;
  */
 public class ScenarioTest {
     private Scenario scenario;
-    private LambdaContainer container;
+    private Container container;
 
     private final Class<TestInterface> interfc;
-    private final Resolver<TestInterface> resolver;
-    private final Resolver<TestInterface> nullResolver;
+    private final Resolution<TestInterface> resolution;
+    private final Resolution<TestInterface> nullResolution;
     private final Extension<TestInterface> extension;
 
     public ScenarioTest() {
         interfc = TestInterface.class;
-        resolver = () -> new TestImplementation();
-        nullResolver = () -> null;
+        resolution = () -> new TestImplementation();
+        nullResolution = () -> null;
         extension = (original -> {
             ((TestImplementation)original).doSomething();
             return original;
@@ -32,28 +32,28 @@ public class ScenarioTest {
 
     @Before
     public void setUp() {
-        container = mock(LambdaContainer.class);
+        container = mock(Container.class);
     }
 
     @Test
     public void testWithSimpleResolution() throws Exception {
         setupWithSimple();
         scenario.setResolutions();
-        verify(container).addResolution(interfc, resolver);
+        verify(container).addResolution(interfc, resolution);
     }
 
     @Test
     public void testWithSingletonResolution() throws Exception {
         setupWithSingleton();
         scenario.setResolutions();
-        verify(container).addSingleResolution(interfc, resolver);
+        verify(container).addSingleResolution(interfc, resolution);
     }
 
     @Test
     public void testWithExtension() throws Exception {
         setupWithExtension();
         scenario.setResolutions();
-        verify(container).addResolution(interfc, resolver);
+        verify(container).addResolution(interfc, resolution);
         verify(container).extend(interfc, extension);
     }
 
@@ -61,8 +61,8 @@ public class ScenarioTest {
     public void testWithOverride() throws Exception {
         setupWithOverride();
         scenario.setResolutions();
-        verify(container).addResolution(interfc, resolver);
-        verify(container).override(interfc, nullResolver);
+        verify(container).addResolution(interfc, resolution);
+        verify(container).override(interfc, nullResolution);
     }
 
     private void setupWithSimple() {
@@ -70,7 +70,7 @@ public class ScenarioTest {
             @Override
             protected void setResolutions() {
                 clear();
-                resolve(interfc).with(resolver);
+                resolve(interfc).with(resolution);
             }
         };
 
@@ -81,7 +81,7 @@ public class ScenarioTest {
         scenario = new Scenario() {
             @Override
             protected void setResolutions() {
-                resolve(interfc).withSingleton(resolver);
+                resolve(interfc).withSingleton(resolution);
             }
         };
 
@@ -92,7 +92,7 @@ public class ScenarioTest {
         scenario = new Scenario() {
             @Override
             protected void setResolutions() {
-                resolve(interfc).with(resolver);
+                resolve(interfc).with(resolution);
                 resolve(interfc).addExtension(extension);
             }
         };
@@ -104,8 +104,8 @@ public class ScenarioTest {
         scenario = new Scenario() {
             @Override
             protected void setResolutions() {
-                resolve(interfc).with(resolver);
-                resolve(interfc).override(nullResolver);
+                resolve(interfc).with(resolution);
+                resolve(interfc).override(nullResolution);
             }
         };
 

@@ -1,17 +1,17 @@
 package com.mrv.lambdacontainer;
 
-import com.mrv.lambdacontainer.interfaces.Resolver;
+import com.mrv.lambdacontainer.interfaces.Resolution;
 
 /**
  * Class with the ability to hold a singleton instance of type T
  */
-class SingletonResolver<T>
-        implements Resolver<T> {
+class SingletonResolution<T>
+        implements Resolution<T> {
 
-    private final Resolver<T> internal;
+    private final Resolution<T> internal;
     private T instance;
 
-    SingletonResolver(Resolver<T> internal) {
+    SingletonResolution(Resolution<T> internal) {
         this.internal = internal;
     }
 

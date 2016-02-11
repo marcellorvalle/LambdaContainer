@@ -5,7 +5,7 @@ package com.mrv.lambdacontainer.interfaces;
  * one class instance.
  */
 @FunctionalInterface
-public interface Resolver<T> {
+public interface Resolution<T> {
     /**
      * Do whatever is needed to create an instance and configure it.
      * @return

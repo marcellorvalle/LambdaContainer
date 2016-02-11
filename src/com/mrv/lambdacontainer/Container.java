@@ -3,7 +3,7 @@ package com.mrv.lambdacontainer;
 import com.mrv.lambdacontainer.exceptions.ClassInstantiationException;
 import com.mrv.lambdacontainer.exceptions.LambdaContainerException;
 import com.mrv.lambdacontainer.interfaces.Extension;
-import com.mrv.lambdacontainer.interfaces.Resolver;
+import com.mrv.lambdacontainer.interfaces.Resolution;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -14,13 +14,13 @@ import java.util.List;
 /**
  * Injection container that uses Lambda operators.
  */
-public class LambdaContainer {
-    private final Map<Class<?>, Resolver<?>> resolvers;
+public class Container {
+    private final Map<Class<?>, Resolution<?>> resolvers;
 
     /**
     * Default constructor
     */
-    public LambdaContainer() {
+    public Container() {
         resolvers = new HashMap<>();
     }
 
@@ -34,47 +34,47 @@ public class LambdaContainer {
     }
 
     /**
-     * Add a resolver to an specific class or interface.
+     * Add a resolution to an specific class or interface.
      * I think this method guarantees the type check security
      * @param element a class or interface
-     * @param resolver
+     * @param resolution
      * @param <T> The class/interface class
      * @throws LambdaContainerException If the element already exists.
      */
-    protected <T> void addResolution(Class<T> element, Resolver<? extends T> resolver) {
+    protected <T> void addResolution(Class<T> element, Resolution<? extends T> resolution) {
         if (resolvers.containsKey(element)) {
             StringBuilder sb = new StringBuilder("Element already exists inside container: ").
             append(element.getName()).
-            append(". Use the override function if you want to explicity change the resolver.");
+            append(". Use the override function if you want to explicity change the resolution.");
 
             throw new LambdaContainerException(sb.toString());
         }
 
-        this.override(element, resolver);
+        this.override(element, resolution);
     }
 
     /**
-     * Add a resolver to an specific class or interface. There will be one single
+     * Add a resolution to an specific class or interface. There will be one single
      * class instance (Singleton) during the container lifetime.
      * @param element
-     * @param resolver
+     * @param resolution
      * @param <T>
      */
-    protected <T> void addSingleResolution(Class<T> element, Resolver<? extends T> resolver) {
+    protected <T> void addSingleResolution(Class<T> element, Resolution<? extends T> resolution) {
         addResolution(
                 element,
-                new SingletonResolver<>(resolver)
+                new SingletonResolution<>(resolution)
         );
     }
 
     /**
-     * Add the resolver and  overwrite the old one if it exists.
+     * Add the resolution and  overwrite the old one if it exists.
      * @param element
-     * @param resolver
+     * @param resolution
      * @param <T>
      */
-    protected <T> void override(Class<T> element, Resolver<? extends T> resolver) {
-        resolvers.put(element, resolver);
+    protected <T> void override(Class<T> element, Resolution<? extends T> resolution) {
+        resolvers.put(element, resolution);
     }
 
     /**
@@ -89,8 +89,8 @@ public class LambdaContainer {
             throw new LambdaContainerException("Element not found inside container: " + element.getName());
         }
 
-        Resolver<T> original = (Resolver<T>) resolvers.get(element);
-        Resolver<T> extended = new Extender<>(original, extension);
+        Resolution<T> original = (Resolution<T>) resolvers.get(element);
+        Resolution<T> extended = new Extender<>(original, extension);
 
         resolvers.put(element, extended);
     }
@@ -180,8 +180,8 @@ public class LambdaContainer {
     private <T> T getInstance(Class<T> element)
             throws ClassInstantiationException {
         if (resolvers.containsKey(element)) {
-            Resolver<?> resolver = resolvers.get(element);
-            return (T)resolver.resolve();
+            Resolution<?> resolution = resolvers.get(element);
+            return (T) resolution.resolve();
         }
 
         return createDefaultInstance(element);
