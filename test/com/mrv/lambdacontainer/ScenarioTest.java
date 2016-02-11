@@ -2,6 +2,8 @@ package com.mrv.lambdacontainer;
 
 import com.mrv.lambdacontainer.TestTools.TestImplementation;
 import com.mrv.lambdacontainer.TestTools.TestInterface;
+import com.mrv.lambdacontainer.interfaces.Extension;
+import com.mrv.lambdacontainer.interfaces.Resolver;
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.Mockito.*;

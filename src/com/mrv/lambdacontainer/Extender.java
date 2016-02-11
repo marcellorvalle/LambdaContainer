@@ -1,5 +1,8 @@
 package com.mrv.lambdacontainer;
 
+import com.mrv.lambdacontainer.interfaces.Extension;
+import com.mrv.lambdacontainer.interfaces.Resolver;
+
 /**
  * This class is used to extend the behavior needed to object instantiation.
  */

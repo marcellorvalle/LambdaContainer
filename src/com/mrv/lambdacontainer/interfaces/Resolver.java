@@ -1,4 +1,4 @@
-package com.mrv.lambdacontainer;
+package com.mrv.lambdacontainer.interfaces;
 
 /**
  * Define the interface used for lambda operators to retrieve

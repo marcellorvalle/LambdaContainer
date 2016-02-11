@@ -1,5 +1,7 @@
 package com.mrv.lambdacontainer;
 
+import com.mrv.lambdacontainer.interfaces.Resolver;
+
 /**
  * Class with the ability to hold a singleton instance of type T
  */

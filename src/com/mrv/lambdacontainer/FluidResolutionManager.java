@@ -1,5 +1,8 @@
 package com.mrv.lambdacontainer;
 
+import com.mrv.lambdacontainer.interfaces.Extension;
+import com.mrv.lambdacontainer.interfaces.Resolver;
+
 /**
  * Auxiliary class used to give fluidity to the interface.
  */

@@ -1,4 +1,4 @@
-package com.mrv.lambdacontainer;
+package com.mrv.lambdacontainer.interfaces;
 
 /**
  * Defines a interface for lambda operations to extend instance configuration
