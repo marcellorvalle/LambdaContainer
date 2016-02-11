@@ -1,36 +1,42 @@
 package com.mrv.lambdacontainer;
 
-import com.mrv.lambdacontainer.exceptions.ClassInstantiationException;
-import com.mrv.lambdacontainer.exceptions.LambdaContainerException;
+import com.mrv.lambdacontainer.exceptions.*;
 import com.mrv.lambdacontainer.interfaces.Extension;
 import com.mrv.lambdacontainer.interfaces.Resolution;
 
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
 
 /**
  * Injection container that uses Lambda operators.
  */
 public class Container {
-    private final Map<Class<?>, Resolution<?>> resolvers;
+    private final Map<Class<?>, Resolution<?>> resolutions;
 
     /**
     * Default constructor
     */
     public Container() {
-        resolvers = new HashMap<>();
+        resolutions = new HashMap<>();
     }
 
     /**
      * Set the current resolution scenario.
      * @param scenario
      */
-    public void setScenario(Scenario scenario) {
+    protected void setScenario(Scenario scenario) {
         scenario.setContainer(this);
         scenario.setResolutions();
+    }
+
+    /**
+     * Check if the resolution exists inside the container.
+     * @param element
+     * @param <T>
+     * @return
+     */
+    protected <T> boolean resolutionExists(Class<T> element) {
+        return resolutions.containsKey(element);
     }
 
     /**
@@ -42,7 +48,7 @@ public class Container {
      * @throws LambdaContainerException If the element already exists.
      */
     protected <T> void addResolution(Class<T> element, Resolution<? extends T> resolution) {
-        if (resolvers.containsKey(element)) {
+        if (resolutions.containsKey(element)) {
             StringBuilder sb = new StringBuilder("Element already exists inside container: ").
             append(element.getName()).
             append(". Use the override function if you want to explicity change the resolution.");
@@ -74,7 +80,7 @@ public class Container {
      * @param <T>
      */
     protected <T> void override(Class<T> element, Resolution<? extends T> resolution) {
-        resolvers.put(element, resolution);
+        resolutions.put(element, resolution);
     }
 
     /**
@@ -85,105 +91,38 @@ public class Container {
      */
     @SuppressWarnings("unchecked")
     protected <T> void extend(Class<T> element, Extension<T> extension) {
-        if (!resolvers.containsKey(element)) {
+        if (!resolutions.containsKey(element)) {
             throw new LambdaContainerException("Element not found inside container: " + element.getName());
         }
 
-        Resolution<T> original = (Resolution<T>) resolvers.get(element);
+        Resolution<T> original = (Resolution<T>) resolutions.get(element);
         Resolution<T> extended = new Extender<>(original, extension);
 
-        resolvers.put(element, extended);
+        resolutions.put(element, extended);
     }
 
     /**
-     * Clear all the defined resolvers.
+     * Clear all the defined resolutions.
      */
     protected void clear() {
-        resolvers.clear();
+        resolutions.clear();
     }
 
     /**
      * Try to resolve the specified element. Suppressing unchecked warnings
      * due to the limits imposed by "addResolution".
-     * @param aClass
+     * @param element
      * @param <T>
      * @return instance of T.
      */
     @SuppressWarnings("unchecked")
-    public <T> T resolve(Class<T> aClass) {
-        try {
-            return getInstance(aClass);
-        } catch (ClassInstantiationException ex) {
-            throw new LambdaContainerException(ex.getMessage(), ex);
-        }
-    }
-
-    /**
-     * Try to createD an instance of a non-mapped class. This method will search
-     * for a default constructor with no parameters. If it does not exists then
-     * it will be attempted to recursively instantiate all parameters.
-     * @param aClass
-     * @param <T>
-     * @return
-     * @throws ClassInstantiationException When it is not possible to instantiate.
-     */
-    @SuppressWarnings("unchecked")
-    protected <T> T createDefaultInstance(Class<T> aClass)
-            throws ClassInstantiationException {
-
-        Constructor<?>[] allConstructors = aClass.getConstructors();
-
-        for (Constructor<?> ctor : allConstructors) {
-            try {
-               return tryInstanciate((Constructor<T>) ctor);
-            } catch (ClassInstantiationException ex) {
-                continue;
-            }
-        }
-
-        throw new ClassInstantiationException("Could not instantiate " + aClass.getName());
-    }
-
-    /**
-     * Try to assembly all parameters needed to instantiate an
-     * object using the given constructor.
-     * @param ctor constructor
-     * @param <T> The class type
-     * @return instantiated object
-     * @throws ClassInstantiationException If was not able to retrieve
-     * all parameters needed by the constructor.
-     */
-    private <T> T tryInstanciate(Constructor<T> ctor)
-            throws ClassInstantiationException {
-        Class<?>[] pTypes = ctor.getParameterTypes();
-        List<Object> parameters = new ArrayList<>();
-
-        for (Class<?> pType : pTypes) {
-            parameters.add(this.getInstance(pType));
-        }
-
-        try {
-            return ctor.newInstance(parameters.toArray());
-        } catch (Exception e) {
-            throw new LambdaContainerException(e.getMessage(), e);
-        }
-    }
-
-    /**
-     * Try to instantiate from mapping or create a default instance if no mapping is found.
-     * @param element
-     * @param <T>
-     * @return
-     * @throws ClassInstantiationException
-     */
-    @SuppressWarnings("unchecked")
-    private <T> T getInstance(Class<T> element)
-            throws ClassInstantiationException {
-        if (resolvers.containsKey(element)) {
-            Resolution<?> resolution = resolvers.get(element);
+    public <T> T resolve(Class<T> element) throws ClassInstantiationException {
+        if (resolutions.containsKey(element)) {
+            Resolution<?> resolution = resolutions.get(element);
             return (T) resolution.resolve();
         }
 
-        return createDefaultInstance(element);
+        throw new ClassInstantiationException("Can not resolve " + element.getName());
     }
+
 }

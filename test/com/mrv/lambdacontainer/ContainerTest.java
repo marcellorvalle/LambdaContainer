@@ -39,43 +39,6 @@ public class ContainerTest {
     }
 
     @Test
-    public void testCreateDefaultInstanceSimple() throws ClassInstantiationException {
-        TestInterface interfc = cont.createDefaultInstance(TestImplementation.class);
-        assertTrue(interfc instanceof TestImplementation);
-    }
-
-    @Test
-    public void testCreateDefaultInstanceComposedMapping() throws ClassInstantiationException {
-        cont.addResolution(
-                TestInterface.class,
-                () -> new TestImplementation()
-        );
-
-        TestComposedClass1 composed = cont.createDefaultInstance(TestComposedClass1.class);
-        assertTrue(composed.getInternal() instanceof TestImplementation);
-        assertEquals(TestComposedClass1.INTERFACE_CONSTRUCTOR, composed.constructorUsed);
-    }
-
-    @Test
-    public void testCreateDefaultInstanceComposedNoMapping() throws ClassInstantiationException {
-        TestComposedClass1 composed = cont.createDefaultInstance(TestComposedClass1.class);
-        assertTrue(composed.getInternal() instanceof TestImplementation);
-        assertEquals(TestComposedClass1.IMPLEMENTATION_CONSTRUCTOR, composed.constructorUsed);
-    }
-
-    @Test
-    public void testCreateDefaultInstanceCanNotInstantiateInterface() throws ClassInstantiationException {
-        exception.expect(ClassInstantiationException.class);
-        cont.createDefaultInstance(TestInterface.class);
-    }
-
-    @Test
-    public void testCreateDefaultInstanceCanNotPrimitiveOnConstructor() throws ClassInstantiationException {
-        exception.expect(ClassInstantiationException.class);
-        cont.createDefaultInstance(TestClassPrimitive.class);
-    }
-
-    @Test
     public void testAddResolverThrowsExceptionWhenDuplicated() {
         cont.addResolution(void.class, () -> null);
         exception.expect(LambdaContainerException.class);
@@ -83,13 +46,15 @@ public class ContainerTest {
     }
 
     @Test
-    public void testResolveThrowsExceptionWhenFail() {
-        exception.expect(LambdaContainerException.class);
+    public void testResolveThrowsExceptionWhenFail()
+            throws Exception {
+        exception.expect(ClassInstantiationException.class);
         cont.resolve(TestClassPrimitive.class);
     }
 
     @Test
-    public void testResolution() {
+    public void testResolution()
+            throws Exception {
         cont.addResolution(
                 TestInterface.class,
                 () -> new TestImplementation()
@@ -109,25 +74,20 @@ public class ContainerTest {
      * A little bit on integration testing here...
      */
     @Test
-    public void testExtend() {
+    public void testExtend()
+            throws Exception {
         TestImplementation impl = mock(TestImplementation.class);
 
-        //add some indirection
         cont.addResolution(
                 TestInterface.class,
-                () -> cont.resolve(TestImplementation.class)
-        );
-
-        cont.addResolution(
-                TestImplementation.class,
                 () -> impl
         );
 
         cont.extend(
-                TestImplementation.class,
+                TestInterface.class,
                 (original) -> {
                     //(...) extension methods
-                    original.doSomething();
+                    ((TestImplementation)original).doSomething();
                     return original;
                 }
         );
@@ -146,7 +106,8 @@ public class ContainerTest {
     }
 
     @Test
-    public void testClear() {
+    public void testClear()
+            throws Exception {
         cont.addResolution(
                 TestInterface.class,
                 () -> new TestImplementation()
@@ -155,7 +116,7 @@ public class ContainerTest {
         cont.resolve(TestInterface.class);
         cont.clear();
 
-        exception.expect(LambdaContainerException.class);
+        exception.expect(ClassInstantiationException.class);
         cont.resolve(TestInterface.class);
     }
 }
