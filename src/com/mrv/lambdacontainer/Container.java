@@ -115,11 +115,10 @@ public class Container {
      * @param <T>
      * @return instance of T.
      */
-    @SuppressWarnings("unchecked")
     public <T> T resolve(Class<T> element) throws ClassInstantiationException {
         if (resolutions.containsKey(element)) {
             Resolution<?> resolution = resolutions.get(element);
-            return (T) resolution.resolve();
+            element.cast(resolution.resolve());
         }
 
         throw new ClassInstantiationException("Can not resolve " + element.getName());
