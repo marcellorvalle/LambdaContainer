@@ -9,107 +9,71 @@ I decided to use Lambda Expressions motivated by [Fabien Potencier's work](http:
 
 ##Basic functionality
 
-###Simple scenario
-Will retrieve a new instance each time an implementation is needed.
+I ~~copied~~ got inspired by Google Guice fluid interface and decided to implement something like that. The two main classes a developer will interact are ContainerFacade and Scenario. The first one contains an entry point to the servicer provided by this API and the second should be extended to configure the container.
 
 ```java
-Container container = new Container();
-container.addResolution(
-        SomeServiceInterface.class,
-        () -> new SomeServiceImplementation();
-);
 
-SomeServiceInterface some = container.resolve(SomeServiceInterface.class);
-some.doYourJob();
-
-//different instances
-assertNotSame(
-        container.resolve(SomeServiceInterface.class), 
-        container.resolve(SomeServiceInterface.class)
-);
+ContainerFacade cf = new ContainerService();
+cf.setScenario(new MyScenarioImplementation());
+FooInterface foo = cf.resolve(FooInterface.class);
 ```
 
-###Complex scenario
-Can be used to configure complex objects.
+###Scenario implementation example
 
 ```java
-container.addResolution(
-        SomeServiceInterface.class,
-        () -> {
-              SomeServiceImplementation some = new SomeServiceImplementation(c.resolve(OtherInterface.class));
-              some->setParameterA(someParameter);
-              some->setParameterB(otherParameter);
-              some->callMethod();
-              //(...)
-              return some;
-        }
-);
-```
+import com.mrv.lambdacontainer.Scenario;
 
-###Autoresolve 
-
-If a class has no resolution defined the container will try to instantiate its dependencies and retrieve it.
-
-```java
-public class ClassWithNoResolution() {
-        public ClassWithNoResolution (SomeInterface service1, OtherInterface service2) {
+public class MyScenarioImplementation  extends Scenario{
+    @Override
+    protected void setResolutions() {
+        //clear all resolutiuons;
+        clear();
+        
+        //Assign FooImplementation as a solution for FooInterface
+        resolve(FooInterface.class).with(
+            () -> new FooImplementation() 
+        );
+        // Obs: Different instances
+        // assertNotSame(facade.resolve(FooInterface.class), facade.resolve(FooInterface.class));
+        
+        //Complex solution
+        resolve(BarInterface.class).with(
+            () -> {
+                BarImplementation bar = new BarImplementation();
+                bar.setParameterA(parameterA);
+                //(...)do whatever is needed to configure it(...)
+                return bar;
+            }
+        );
+        
+        //Singleton solution
+        resolve(QuxInterface.class).withSingleton(
+            () -> new QuxImplementation()
+        );
+        // Obs: Same instance
+        // assertSame(facade.resolve(QuxInterface.class), facade.resolve(QuxInterface.class));
+        
+        
+        //Extending existing solutions
+        resolve(FooInterface).addExtension(
+            (original) -> {
+                original.setParameterA(parametarA);
                 //(...)
-        }
+                return original;
+            }
+        );
+        
+        //Override existing solutions
+        resolve(BarInterface).override(
+            () -> new BarImplementation()
+        );
+    }
 }
 
-container.addResolution(
-        SomeInterface.class,
-        () -> new SomeImplementation();
-);
-
-container.addResolution(
-        OtherInterface.class,
-        () -> new OtherImplementation();
-);
-
-//will work
-ClassWithNoResolution obj = container.resolve(ClassWithNoResolution.class);
-
-```
-
-###Single instance support 
-Will retrieve the same instance each time an implementation is needed.
-
-```java
-container.addSingleResolution(
-        SomeServiceInterface.class,
-        () -> new SomeServiceImplementation();
-);
-
-//Same instances
-assertSame(
-        container.resolve(SomeServiceInterface.class), 
-        container.resolve(SomeServiceInterface.class)
-);
-```
-###Resolution extension
-Used to add new extra configuration via decoration.
-
-```java
-container.addResolution(
-        SomeServiceInterface.class,
-        () -> new SomeServiceImplementation();
-);
-
-container.extend(
-        SomeServiceInterface.class,
-        (original) -> {
-                original.setParameterA(someParameter);
-                return original;
-        }
-)
-SomeServiceInterface someService = container.resolve(SomeServiceInterfave.class);
-
-assertEquals(someParameter, someService.getParameterA());
 ```
 
 ## What to do next...
 
 * Support to @Inject annotation
-* Implement an interface a little bit more fluid (almost done)
-* Support for different configuration scenarios (almost done)
+* ~~Implement an interface a little bit more fluid~~
+* ~~Support for different configuration scenarios~~
