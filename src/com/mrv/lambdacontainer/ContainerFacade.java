@@ -24,7 +24,6 @@ public class ContainerFacade {
      */
     public <T> T resolve(Class<T> element) {
         try {
-
             if (container.resolutionExists(element)) {
                 return container.resolve(element);
             }

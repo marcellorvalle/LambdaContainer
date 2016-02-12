@@ -14,9 +14,9 @@ public class Container {
     private final Map<Class<?>, Resolution<?>> resolutions;
 
     /**
-    * Default constructor
+    * Default constructor. Only the facade can instantiate it.
     */
-    public Container() {
+    protected Container() {
         resolutions = new HashMap<>();
     }
 
@@ -118,7 +118,7 @@ public class Container {
     public <T> T resolve(Class<T> element) throws ClassInstantiationException {
         if (resolutions.containsKey(element)) {
             Resolution<?> resolution = resolutions.get(element);
-            element.cast(resolution.resolve());
+            return element.cast(resolution.resolve());
         }
 
         throw new ClassInstantiationException("Can not resolve " + element.getName());

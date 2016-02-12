@@ -1,11 +1,7 @@
 package com.mrv.lambdacontainer;
 
-import com.mrv.lambdacontainer.TestTools.TestClassPrimitive;
-import com.mrv.lambdacontainer.TestTools.TestComposedClass1;
-import com.mrv.lambdacontainer.exceptions.ClassInstantiationException;
-import com.mrv.lambdacontainer.exceptions.LambdaContainerException;
-import com.mrv.lambdacontainer.TestTools.TestImplementation;
-import com.mrv.lambdacontainer.TestTools.TestInterface;
+import com.mrv.lambdacontainer.TestTools.*;
+import com.mrv.lambdacontainer.exceptions.*;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
