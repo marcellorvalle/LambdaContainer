@@ -26,7 +26,7 @@ import com.mrv.lambdacontainer.Scenario;
 public class MyScenarioImplementation  extends Scenario{
     @Override
     protected void setResolutions() {
-        //clear all resolutiuons;
+        //clear all resolutions;
         clear();
         
         //Assign FooImplementation as a solution for FooInterface
