@@ -39,6 +39,11 @@ public class ContainerFacade {
      * @param scenario
      */
     public void setScenario(Scenario scenario) {
-        container.setScenario(scenario);
+        scenario.setFacade(this);
+        scenario.setResolutions();
+    }
+
+    protected Container getContainer() {
+        return this.container;
     }
 }

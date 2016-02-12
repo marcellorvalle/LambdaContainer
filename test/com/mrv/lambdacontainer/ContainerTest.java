@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -23,15 +22,6 @@ public class ContainerTest {
     @Before
     public void setUp() {
         cont = new Container();
-    }
-
-    @Test
-    public void testSetScenario() {
-        Scenario scenario = mock(Scenario.class);
-        cont.setScenario(scenario);
-
-        verify(scenario).setContainer(cont);
-        verify(scenario).setResolutions();
     }
 
     @Test

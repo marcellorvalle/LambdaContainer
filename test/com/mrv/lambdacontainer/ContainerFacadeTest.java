@@ -10,16 +10,15 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by Marcello on 12/02/2016.
  */
 public class ContainerFacadeTest {
-    private final Scenario scenario;
     private final Class<TestInterface> element;
     private ContainerFacade facade;
 
+    @Mocked
+    Scenario scenario;
     @Mocked
     Container container;
     @Mocked
@@ -45,7 +44,7 @@ public class ContainerFacadeTest {
     @Test
     public void testSetScenario() {
         new Expectations() {
-            { container.setScenario(scenario); times = 1; }
+            { scenario.setFacade(facade); times = 1; }
         };
 
         facade.setScenario(scenario);

@@ -1,7 +1,6 @@
 package com.mrv.lambdacontainer;
 
-import com.mrv.lambdacontainer.TestTools.TestImplementation;
-import com.mrv.lambdacontainer.TestTools.TestInterface;
+import com.mrv.lambdacontainer.TestTools.*;
 import org.junit.Before;
 import org.junit.Test;
 

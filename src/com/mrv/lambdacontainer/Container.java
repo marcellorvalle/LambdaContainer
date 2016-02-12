@@ -21,15 +21,6 @@ public class Container {
     }
 
     /**
-     * Set the current resolution scenario.
-     * @param scenario
-     */
-    protected void setScenario(Scenario scenario) {
-        scenario.setContainer(this);
-        scenario.setResolutions();
-    }
-
-    /**
      * Check if the resolution exists inside the container.
      * @param element
      * @param <T>

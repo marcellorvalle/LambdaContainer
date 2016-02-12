@@ -1,13 +1,16 @@
 package com.mrv.lambdacontainer;
 
+import com.mrv.lambdacontainer.exceptions.ClassInstantiationException;
+import com.mrv.lambdacontainer.exceptions.LambdaContainerException;
+
 /**
  * Represents different resolution scenarios. Developers may extend this and override setResolutions method.
  */
 public abstract class Scenario {
-    private Container container;
+    private ContainerFacade facade;
 
-    protected void setContainer(Container container) {
-        this.container = container;
+    protected void setFacade(ContainerFacade facade) {
+        this.facade = facade;
     }
 
     /**
@@ -23,7 +26,7 @@ public abstract class Scenario {
      */
     protected final <T> FluidResolutionManager<T> resolve (Class<T> clazz) {
         return new FluidResolutionManager<>(
-                container,
+                facade.getContainer(),
                 clazz
         );
     }
@@ -31,7 +34,19 @@ public abstract class Scenario {
     /**
      * Clear all resolutions.
      */
-    protected void clear() {
-        container.clear();
+    protected final void clear() {
+        facade.getContainer().clear();
+    }
+
+    protected  final <T> boolean solutionExists(Class<T> clazz) {
+        return facade.getContainer().resolutionExists(clazz);
+    }
+
+    protected final <T> T get(Class<T> clazz) {
+        try {
+            return facade.getContainer().resolve(clazz);
+        } catch (ClassInstantiationException e) {
+            throw new LambdaContainerException(e.getMessage(), e);
+        }
     }
 }
