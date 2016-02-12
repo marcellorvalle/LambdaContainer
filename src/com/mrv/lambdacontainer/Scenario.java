@@ -4,9 +4,9 @@ package com.mrv.lambdacontainer;
  * Represents different resolution scenarios. Developers may extend this and override setResolutions method.
  */
 public abstract class Scenario {
-    private LambdaContainer container;
+    private Container container;
 
-    protected void setContainer(LambdaContainer container) {
+    protected void setContainer(Container container) {
         this.container = container;
     }
 

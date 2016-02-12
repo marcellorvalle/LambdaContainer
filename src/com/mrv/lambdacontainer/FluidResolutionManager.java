@@ -1,13 +1,13 @@
 package com.mrv.lambdacontainer;
 
 import com.mrv.lambdacontainer.interfaces.Extension;
-import com.mrv.lambdacontainer.interfaces.Resolver;
+import com.mrv.lambdacontainer.interfaces.Resolution;
 
 /**
  * Auxiliary class used to give fluidity to the interface.
  */
 public class FluidResolutionManager<T> {
-    private final LambdaContainer container;
+    private final Container container;
     private final Class<T> element;
 
     /**
@@ -15,25 +15,25 @@ public class FluidResolutionManager<T> {
      * @param container
      * @param element
      */
-    FluidResolutionManager(LambdaContainer container, Class<T> element) {
+    FluidResolutionManager(Container container, Class<T> element) {
         this.container = container;
         this.element = element;
     }
 
     /**
      * Will delegate a simple resolution to the container.
-     * @param resolver
+     * @param resolution
      */
-    public void with(Resolver<? extends T> resolver) {
-        container.addResolution(element, resolver);
+    public void with(Resolution<? extends T> resolution) {
+        container.addResolution(element, resolution);
     }
 
     /**
      * Will delegate a singleton resolution to the container.
-     * @param resolver
+     * @param resolution
      */
-    public void withSingleton(Resolver<? extends T> resolver) {
-        container.addSingleResolution(element, resolver);
+    public void withSingleton(Resolution<? extends T> resolution) {
+        container.addSingleResolution(element, resolution);
     }
 
     /**
@@ -46,9 +46,9 @@ public class FluidResolutionManager<T> {
 
     /**
      * Will delegate the the override to the container.
-     * @param resolver
+     * @param resolution
      */
-    public void override(Resolver<? extends T> resolver) {
-        container.override(element, resolver);
+    public void override(Resolution<? extends T> resolution) {
+        container.override(element, resolution);
     }
 }
