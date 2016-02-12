@@ -46,7 +46,7 @@ container.addResolution(
 );
 ```
 
-###Autobuild 
+###Autoresolve 
 
 If a class has no resolution defined the container will try to instantiate its dependencies and retrieve it.
 
