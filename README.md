@@ -74,6 +74,6 @@ public class MyScenarioImplementation  extends Scenario{
 
 ## What to do next...
 
-* Support to @Inject annotation
+* Support @Inject annotation
 * ~~Implement an interface a little bit more fluid~~
 * ~~Support for different configuration scenarios~~
