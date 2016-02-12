@@ -111,19 +111,5 @@ assertEquals(someParameter, someService.getParameterA());
 ## What to do next...
 
 * Support to @Inject annotation
-* Implement an interface a little bit more fluid
-* Support for different configuration scenarios
-* Simplify resolution insertion when there is no subclassing or interface implementation:
-
- ```java
-//instead of 
-container.addResolution(
-        SomeServiceImplementation.class,
-        () -> new SomeServiceImplementation();
-);
-
-//Should be nice to have:
-container.addResolution(
-        () -> new SomeServiceImplementation();
-);
- ```
+* Implement an interface a little bit more fluid (almost done)
+* Support for different configuration scenarios (almost done)
