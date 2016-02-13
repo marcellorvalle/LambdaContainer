@@ -1,6 +1,6 @@
 package com.mrv.lambdacontainer;
 
-import com.mrv.lambdacontainer.interfaces.Extension;
+import java.util.function.UnaryOperator;
 import com.mrv.lambdacontainer.interfaces.Resolution;
 
 /**
@@ -40,7 +40,7 @@ public class FluidResolutionManager<T> {
      * Will delegate the extension creation to the container.
      * @param extension
      */
-    public void addExtension(Extension<T> extension) {
+    public void addExtension(UnaryOperator<T> extension) {
         container.extend(element, extension);
     }
 

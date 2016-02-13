@@ -1,21 +1,21 @@
 package com.mrv.lambdacontainer;
 
-import com.mrv.lambdacontainer.interfaces.Extension;
 import com.mrv.lambdacontainer.interfaces.Resolution;
+import java.util.function.UnaryOperator;
 
 /**
  * This class is used to extend the behavior needed to object instantiation.
  */
 public class Extender<T> implements Resolution<T> {
     private final Resolution<T> internal;
-    private final Extension<T> extension;
+    private final UnaryOperator<T> extension;
 
      /**
      * Define the inner Resolution and extensions applicable to it.
      * @param internal
      * @param extension
      */
-    Extender(Resolution<T> internal, Extension<T> extension) {
+    Extender(Resolution<T> internal, UnaryOperator<T> extension) {
         this.internal = internal;
         this.extension = extension;
     }
@@ -27,6 +27,6 @@ public class Extender<T> implements Resolution<T> {
     @Override
     public T resolve() {
         T original = internal.resolve();
-        return extension.extend(original);
+        return extension.apply(original);
     }
 }

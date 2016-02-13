@@ -4,6 +4,7 @@ import com.mrv.lambdacontainer.exceptions.*;
 import com.mrv.lambdacontainer.interfaces.Extension;
 import com.mrv.lambdacontainer.interfaces.Resolution;
 
+import java.util.function.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -81,7 +82,7 @@ public class Container {
      * @param <T>
      */
     @SuppressWarnings("unchecked")
-    protected <T> void extend(Class<T> element, Extension<T> extension) {
+    protected <T> void extend(Class<T> element, UnaryOperator<T> extension) {
         if (!resolutions.containsKey(element)) {
             throw new LambdaContainerException("Element not found inside container: " + element.getName());
         }

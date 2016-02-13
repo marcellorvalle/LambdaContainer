@@ -4,7 +4,7 @@ import com.mrv.lambdacontainer.TestTools.TestImplementation;
 import com.mrv.lambdacontainer.TestTools.TestInterface;
 import com.mrv.lambdacontainer.exceptions.ClassInstantiationException;
 import com.mrv.lambdacontainer.exceptions.LambdaContainerException;
-import com.mrv.lambdacontainer.interfaces.Extension;
+import java.util.function.UnaryOperator;
 import com.mrv.lambdacontainer.interfaces.Resolution;
 import mockit.Expectations;
 import mockit.Mocked;
@@ -13,7 +13,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import static org.junit.Assert.*;
 
 /**
  * Created by Marcello on 10/02/2016.
@@ -28,7 +27,7 @@ public class ScenarioTest {
     private final Class<TestInterface> interfc;
     private final Resolution<TestInterface> resolution;
     private final Resolution<TestInterface> nullResolution;
-    private final Extension<TestInterface> extension;
+    private final UnaryOperator<TestInterface> extension;
 
     @Mocked Container container;
 
