@@ -47,13 +47,13 @@ public class MyScenarioImplementation  extends Scenario{
         );
         
         //Singleton solution
-        resolve(QuxInterface.class).withSingleton(QuxImplementation::new);
+        resolveSingle(QuxInterface.class).with(QuxImplementation::new);
         // Obs: Same instance
         // assertSame(facade.resolve(QuxInterface.class), facade.resolve(QuxInterface.class));
         
         
         //Extending existing solutions
-        resolve(FooInterface).addExtension(
+        extend(FooInterface).with(
             (original) -> {
                 original.setParameterA(parametarA);
                 //(...)
@@ -62,7 +62,7 @@ public class MyScenarioImplementation  extends Scenario{
         );
         
         //Override existing solutions
-        resolve(BarInterface).override(BarImplementation::new);
+        override(BarInterface).with(BarImplementation::new);
     }
 }
 
