@@ -53,7 +53,7 @@ public class MyScenarioImplementation  extends Scenario{
         
         
         //Extending existing solutions
-        extend(FooInterface).with(
+        extend(FooInterface.class).with(
             (original) -> {
                 original.setParameterA(parametarA);
                 //(...)
@@ -62,7 +62,7 @@ public class MyScenarioImplementation  extends Scenario{
         );
         
         //Override existing solutions
-        override(BarInterface).with(BarImplementation::new);
+        override(BarInterface.class).with(BarImplementation::new);
     }
 }
 
