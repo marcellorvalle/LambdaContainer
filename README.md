@@ -15,6 +15,8 @@ I ~~copied~~ got inspired by Google Guice fluid interface and decided to impleme
 
 ContainerFacade cf = new ContainerService();
 cf.setScenario(new MyScenarioImplementation());
+
+//Lazy instantiation
 FooInterface foo = cf.resolve(FooInterface.class);
 ```
 
@@ -30,9 +32,7 @@ public class MyScenarioImplementation  extends Scenario{
         clear();
         
         //Assign FooImplementation as a solution for FooInterface
-        resolve(FooInterface.class).with(
-            () -> new FooImplementation() 
-        );
+        resolve(FooInterface.class).with(FooImplementation::new);
         // Obs: Different instances
         // assertNotSame(facade.resolve(FooInterface.class), facade.resolve(FooInterface.class));
         
@@ -47,9 +47,7 @@ public class MyScenarioImplementation  extends Scenario{
         );
         
         //Singleton solution
-        resolve(QuxInterface.class).withSingleton(
-            () -> new QuxImplementation()
-        );
+        resolve(QuxInterface.class).withSingleton(QuxImplementation::new);
         // Obs: Same instance
         // assertSame(facade.resolve(QuxInterface.class), facade.resolve(QuxInterface.class));
         
@@ -64,9 +62,7 @@ public class MyScenarioImplementation  extends Scenario{
         );
         
         //Override existing solutions
-        resolve(BarInterface).override(
-            () -> new BarImplementation()
-        );
+        resolve(BarInterface).override(BarImplementation::new);
     }
 }
 
