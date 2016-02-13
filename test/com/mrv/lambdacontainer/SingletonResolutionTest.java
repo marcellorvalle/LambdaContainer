@@ -22,8 +22,8 @@ public class SingletonResolutionTest {
     @Test
     public void testResolve() throws Exception {
         assertSame(
-                resolver.resolve(),
-                resolver.resolve()
+                resolver.get(),
+                resolver.get()
         );
     }
 }

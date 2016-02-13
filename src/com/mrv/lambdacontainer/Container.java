@@ -1,8 +1,6 @@
 package com.mrv.lambdacontainer;
 
 import com.mrv.lambdacontainer.exceptions.*;
-import com.mrv.lambdacontainer.interfaces.Extension;
-import com.mrv.lambdacontainer.interfaces.Resolution;
 
 import java.util.function.*;
 import java.util.HashMap;
@@ -12,7 +10,7 @@ import java.util.Map;
  * Injection container that uses Lambda operators.
  */
 public class Container {
-    private final Map<Class<?>, Resolution<?>> resolutions;
+    private final Map<Class<?>, Supplier<?>> resolutions;
 
     /**
     * Default constructor. Only the facade can instantiate it.
@@ -39,7 +37,7 @@ public class Container {
      * @param <T> The class/interface class
      * @throws LambdaContainerException If the element already exists.
      */
-    protected <T> void addResolution(Class<T> element, Resolution<? extends T> resolution) {
+    protected <T> void addResolution(Class<T> element, Supplier<? extends T> resolution) {
         if (resolutions.containsKey(element)) {
             StringBuilder sb = new StringBuilder("Element already exists inside container: ").
             append(element.getName()).
@@ -58,7 +56,7 @@ public class Container {
      * @param resolution
      * @param <T>
      */
-    protected <T> void addSingleResolution(Class<T> element, Resolution<? extends T> resolution) {
+    protected <T> void addSingleResolution(Class<T> element, Supplier<? extends T> resolution) {
         addResolution(
                 element,
                 new SingletonResolution<>(resolution)
@@ -71,7 +69,7 @@ public class Container {
      * @param resolution
      * @param <T>
      */
-    protected <T> void override(Class<T> element, Resolution<? extends T> resolution) {
+    protected <T> void override(Class<T> element, Supplier<? extends T> resolution) {
         resolutions.put(element, resolution);
     }
 
@@ -87,8 +85,8 @@ public class Container {
             throw new LambdaContainerException("Element not found inside container: " + element.getName());
         }
 
-        Resolution<T> original = (Resolution<T>) resolutions.get(element);
-        Resolution<T> extended = new Extender<>(original, extension);
+        Supplier<T> original = (Supplier<T>) resolutions.get(element);
+        Supplier<T> extended = new Extender<>(original, extension);
 
         resolutions.put(element, extended);
     }
@@ -109,8 +107,8 @@ public class Container {
      */
     public <T> T resolve(Class<T> element) throws ClassInstantiationException {
         if (resolutions.containsKey(element)) {
-            Resolution<?> resolution = resolutions.get(element);
-            return element.cast(resolution.resolve());
+            Supplier<?> resolution = resolutions.get(element);
+            return element.cast(resolution.get());
         }
 
         throw new ClassInstantiationException("Can not resolve " + element.getName());

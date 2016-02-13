@@ -1,7 +1,6 @@
 package com.mrv.lambdacontainer;
 
-import java.util.function.UnaryOperator;
-import com.mrv.lambdacontainer.interfaces.Resolution;
+import java.util.function.*;
 
 /**
  * Auxiliary class used to give fluidity to the interface.
@@ -24,7 +23,7 @@ public class FluidResolutionManager<T> {
      * Will delegate a simple resolution to the container.
      * @param resolution
      */
-    public void with(Resolution<? extends T> resolution) {
+    public void with(Supplier<? extends T> resolution) {
         container.addResolution(element, resolution);
     }
 
@@ -32,7 +31,7 @@ public class FluidResolutionManager<T> {
      * Will delegate a singleton resolution to the container.
      * @param resolution
      */
-    public void withSingleton(Resolution<? extends T> resolution) {
+    public void withSingleton(Supplier<? extends T> resolution) {
         container.addSingleResolution(element, resolution);
     }
 
@@ -48,7 +47,7 @@ public class FluidResolutionManager<T> {
      * Will delegate the the override to the container.
      * @param resolution
      */
-    public void override(Resolution<? extends T> resolution) {
+    public void override(Supplier<? extends T> resolution) {
         container.override(element, resolution);
     }
 }

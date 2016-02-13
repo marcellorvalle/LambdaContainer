@@ -22,7 +22,7 @@ public class ExtenderTest {
                 }
         );
 
-        ext.resolve();
+        ext.get();
         verify(impl).doSomething();
     }
 }
