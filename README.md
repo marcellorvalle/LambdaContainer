@@ -15,6 +15,8 @@ I ~~copied~~ got inspired by Google Guice fluid interface and decided to impleme
 
 ContainerFacade cf = new ContainerService();
 cf.setScenario(new MyScenarioImplementation());
+
+//Lazy instantiation
 FooInterface foo = cf.resolve(FooInterface.class);
 ```
 
