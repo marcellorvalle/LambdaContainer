@@ -37,7 +37,7 @@ public class Container {
      * @param <T> The class/interface class
      * @throws LambdaContainerException If the element already exists.
      */
-    protected <T> void addResolution(Class<T> element, Supplier<? extends T> resolution) {
+    public <T> void addResolution(Class<T> element, Supplier<? extends T> resolution) {
         if (resolutions.containsKey(element)) {
             StringBuilder sb = new StringBuilder("Element already exists inside container: ").
             append(element.getName()).
@@ -56,7 +56,7 @@ public class Container {
      * @param resolution
      * @param <T>
      */
-    protected <T> void addSingleResolution(Class<T> element, Supplier<? extends T> resolution) {
+    public <T> void addSingleResolution(Class<T> element, Supplier<? extends T> resolution) {
         addResolution(
                 element,
                 new SingletonResolution<>(resolution)
@@ -69,7 +69,7 @@ public class Container {
      * @param resolution
      * @param <T>
      */
-    protected <T> void override(Class<T> element, Supplier<? extends T> resolution) {
+    public <T> void override(Class<T> element, Supplier<? extends T> resolution) {
         resolutions.put(element, resolution);
     }
 
@@ -80,7 +80,7 @@ public class Container {
      * @param <T>
      */
     @SuppressWarnings("unchecked")
-    protected <T> void extend(Class<T> element, UnaryOperator<T> extension) {
+    public <T> void extend(Class<T> element, UnaryOperator<T> extension) {
         if (!resolutions.containsKey(element)) {
             throw new LambdaContainerException("Element not found inside container: " + element.getName());
         }
