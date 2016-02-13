@@ -2,6 +2,7 @@ package com.mrv.lambdacontainer;
 
 import com.mrv.lambdacontainer.exceptions.ClassInstantiationException;
 import com.mrv.lambdacontainer.exceptions.LambdaContainerException;
+import com.mrv.lambdacontainer.fluid.*;
 
 /**
  * Represents different resolution scenarios. Developers may extend this and override setResolutions method.
@@ -18,14 +19,29 @@ public abstract class Scenario {
      */
     protected abstract void setResolutions();
 
-    /**
-     * Indicates wich element should be resolved.
-     * @param clazz
-     * @param <T>
-     * @return
-     */
-    protected final <T> FluidResolutionManager<T> resolve (Class<T> clazz) {
-        return new FluidResolutionManager<>(
+    protected final <T> FluidResolve<T> resolve(Class<T> clazz) {
+        return new FluidResolve<>(
+            facade.getContainer(),
+            clazz
+        );
+    }
+
+    protected final <T> FluidResolveSingle<T> resolveSingle(Class<T> clazz) {
+        return new FluidResolveSingle<>(
+                facade.getContainer(),
+                clazz
+        );
+    }
+
+    protected final <T> FluidOverride<T> override(Class<T> clazz) {
+        return new FluidOverride<>(
+                facade.getContainer(),
+                clazz
+        );
+    }
+
+    protected final <T> FluidExtend<T> extend(Class<T> clazz) {
+        return new FluidExtend<>(
                 facade.getContainer(),
                 clazz
         );

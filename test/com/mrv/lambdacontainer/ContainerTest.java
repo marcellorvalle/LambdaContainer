@@ -43,7 +43,7 @@ public class ContainerTest {
             throws Exception {
         cont.addResolution(
                 TestInterface.class,
-                () -> new TestImplementation()
+                TestImplementation::new
         );
 
         TestInterface implementation = cont.resolve(TestInterface.class);

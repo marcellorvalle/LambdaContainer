@@ -148,7 +148,7 @@ public class ScenarioTest {
         scenario = new Scenario() {
             @Override
             protected void setResolutions() {
-                resolve(interfc).withSingleton(resolution);
+                resolveSingle(interfc).with(resolution);
             }
         };
 
@@ -160,7 +160,7 @@ public class ScenarioTest {
             @Override
             protected void setResolutions() {
                 resolve(interfc).with(resolution);
-                resolve(interfc).addExtension(extension);
+                extend(interfc).with(extension);
             }
         };
 
@@ -172,7 +172,7 @@ public class ScenarioTest {
             @Override
             protected void setResolutions() {
                 resolve(interfc).with(resolution);
-                resolve(interfc).override(nullResolution);
+                override(interfc).with(nullResolution);
             }
         };
 
