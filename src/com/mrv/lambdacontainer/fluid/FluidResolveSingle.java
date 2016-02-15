@@ -1,11 +1,10 @@
 package com.mrv.lambdacontainer.fluid;
 
 import com.mrv.lambdacontainer.Container;
-
 import java.util.function.Supplier;
 
 /**
- * Created by Marcello on 13/02/2016.
+ * Fluid ResolveSingle Helper
  */
 public class FluidResolveSingle<T> extends Fluid<T, Supplier<T>> {
     public FluidResolveSingle(Container container, Class<T> clazz) {

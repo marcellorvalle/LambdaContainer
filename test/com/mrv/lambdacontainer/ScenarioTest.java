@@ -32,7 +32,7 @@ public class ScenarioTest {
 
     public ScenarioTest() {
         interfc = TestInterface.class;
-        resolution = () -> new TestImplementation();
+        resolution = TestImplementation::new;
         nullResolution = () -> null;
         extension = (original -> {
             ((TestImplementation)original).doSomething();

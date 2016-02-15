@@ -4,7 +4,7 @@ import com.mrv.lambdacontainer.Container;
 import java.util.function.Supplier;
 
 /**
- * Created by Marcello on 13/02/2016.
+ * Fluid resolve helper
  */
 public class FluidResolve<T> extends Fluid<T,Supplier<T>>{
     public FluidResolve(Container container, Class<T> clazz) {
