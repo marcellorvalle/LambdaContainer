@@ -65,4 +65,8 @@ public abstract class Scenario {
             throw new LambdaContainerException(e.getMessage(), e);
         }
     }
+
+    protected final void inject(Object object) {
+        facade.getInjector().inject(object);
+    }
 }

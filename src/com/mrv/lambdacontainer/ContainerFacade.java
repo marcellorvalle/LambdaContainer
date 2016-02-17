@@ -1,6 +1,7 @@
 package com.mrv.lambdacontainer;
 
 import com.mrv.lambdacontainer.exceptions.*;
+import com.mrv.lambdacontainer.reflection.Injector;
 import com.mrv.lambdacontainer.reflection.ReflectionConstructor;
 
 /**
@@ -8,10 +9,12 @@ import com.mrv.lambdacontainer.reflection.ReflectionConstructor;
  */
 public class ContainerFacade {
     private final Container container;
+    private final Injector injector;
     private final ReflectionConstructor constructor;
 
     public  ContainerFacade() {
         container = new Container();
+        injector = new Injector(this);
         constructor = new ReflectionConstructor(this);
     }
 
@@ -28,7 +31,11 @@ public class ContainerFacade {
                 return container.resolve(element);
             }
 
-            return constructor.resolve(element);
+            T object = constructor.resolve(element);
+            injector.inject(object, element);
+
+            return object;
+
         } catch (ClassInstantiationException e) {
             throw new LambdaContainerException(e.getMessage(), e);
         }
@@ -42,6 +49,8 @@ public class ContainerFacade {
         scenario.setFacade(this);
         scenario.setResolutions();
     }
+
+    protected Injector getInjector() { return this.injector; }
 
     protected Container getContainer() {
         return this.container;

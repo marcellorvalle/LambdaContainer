@@ -9,10 +9,14 @@ public class ClassToInject {
     @Inject
     private TestInterface privateInjection;
     @Inject
+    private TestComposedClass1 privateInjectionComposed;
+    @Inject
     public TestInterface publicInjection;
 
     public TestInterface methodInjection;
     public TestInterface methodPrivateInjection;
+
+
     public boolean noParamaterMethodWasCalled = false;
 
     public TestInterface getPrivate() {
@@ -32,5 +36,9 @@ public class ClassToInject {
     @Inject
     private void noParameterMethod() {
         noParamaterMethodWasCalled = true;
+    }
+
+    public TestInterface getPrivateInjectionComposed() {
+        return privateInjectionComposed;
     }
 }
