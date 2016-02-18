@@ -63,7 +63,7 @@ public class ContainerFacadeTest {
                 container.resolutionExists(element); returns(true);
                 container.resolve(element); times = 1;
                 rContructor.resolve(element); times = 0;
-                injector.inject(implementation, element); times = 0;
+                injector.injectInto(implementation, element); times = 0;
         }};
 
         facade.resolve(element);
@@ -76,7 +76,7 @@ public class ContainerFacadeTest {
                 container.resolutionExists(element); returns(false);
                 container.resolve(element); times = 0;
                 rContructor.resolve(element); result = implementation; times = 1;
-                injector.inject(implementation, element); times = 1;
+                injector.injectInto(implementation, element); times = 1;
         }};
 
         facade.resolve(element);

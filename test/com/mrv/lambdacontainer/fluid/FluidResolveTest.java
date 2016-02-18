@@ -1,7 +1,6 @@
 package com.mrv.lambdacontainer.fluid;
 
 import com.mrv.lambdacontainer.TestTools.TestInterface;
-import org.junit.Test;
 
 import static org.mockito.Mockito.verify;
 

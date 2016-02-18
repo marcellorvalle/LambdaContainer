@@ -32,7 +32,7 @@ public class ContainerFacade {
             }
 
             T object = constructor.resolve(element);
-            injector.inject(object, element);
+            injector.injectInto(object, element);
 
             return object;
 

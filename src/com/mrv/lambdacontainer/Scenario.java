@@ -66,7 +66,7 @@ public abstract class Scenario {
         }
     }
 
-    protected final void inject(Object object) {
-        facade.getInjector().inject(object);
+    protected final void injectInto(Object object) {
+        facade.getInjector().injectInto(object);
     }
 }

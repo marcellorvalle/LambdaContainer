@@ -22,8 +22,8 @@ public class Injector {
      * Inject into fields and methods market with @Inject
      * @param object
      */
-    public void inject(Object object) {
-        this.inject(object, object.getClass());
+    public void injectInto(Object object) {
+        this.injectInto(object, object.getClass());
     }
 
     /**
@@ -32,7 +32,7 @@ public class Injector {
      * @param clazz
      * @param <T>
      */
-    public <T> void inject(Object object, Class<T> clazz) {
+    public <T> void injectInto(Object object, Class<T> clazz) {
         processFields(object, clazz);
         processMethods(object, clazz);
     }
