@@ -73,8 +73,8 @@ public class MyScenarioImplementation  extends Scenario{
 If the container is asked to resolve a class/interface and can't find a resolver it will try one of the following:
 
 * Find a default constructor and instantiate the object; or
-* Find a constructor with parameter(s) it can resolve and instantiatethe object; or
-* Thrown LambdaContainerException(unchecked).
+* Find a constructor with parameter(s) it can resolve and instantiate the object; or
+* Thrown LambdaContainerException.
 
 So you can have something like this:
 
