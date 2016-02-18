@@ -82,21 +82,15 @@ So you can have something like this:
 public interface Simple {}
 
 public class SimpleImplementation implements Simple{
-    public Simple() {
-    //(...)
-    }
+    public Simple() { //... }
 }
 
 public class Composed {
-    public Composed(SimpleImplementation simple) {
-    //(...)
-    }
+    public Composed(SimpleImplementation simple) { //... }
 }
 
 public class ComposedWithInterface {
-    public ComposedWithInterface(Simple simple) {
-    //(...)
-    }
+    public ComposedWithInterface(Simple simple) { //... }
 }
 
 //1 - will work. No need to define a scenario
