@@ -82,21 +82,21 @@ So you can have something like this:
 public interface Simple {}
 
 public class SimpleImplementation implements Simple{
-    public Simple() { //... }
+    public Simple() {}
 }
 
 public class Composed {
-    public Composed(SimpleImplementation simple) { //... }
+    public Composed(SimpleImplementation simple) {}
 }
 
 public class ComposedWithInterface {
-    public ComposedWithInterface(Simple simple) { //... }
+    public ComposedWithInterface(Simple simple) {}
 }
 
 //1 - will work. No need to define a scenario
 facade.resolve(SimpleImplementation.class); 
 //2 - will work. No need to define a scenario
-facade.resolve(Composed.class); //will work. No need to define a scenario
+facade.resolve(Composed.class);
 //3 - will not work! Define a resolution for Simple.class first! 
 facade.resolve(ComposedWithInterface.class); 
 ```
@@ -128,17 +128,30 @@ The class:
 public class ToBeInjected {
     @Inject
     private Foo foo;
-    //(...)
-
+  
     @Inject
-    public function injectHere(Bar bar, Quz quz) {//(...)}
+    public function injectHere(Bar bar, Quz quz) {}
 }
 ```
 
 Can be resolved and corrected "injected into" if the container can also resolve Foo, Bar and Quz:
 
 ```java
-    facade.resolve(ToBeInjected.class);
+facade.setScenario(new Scenario() {
+    @Override
+    protected void setResolutions() {
+        resolve(Foo.class)
+            .with(FooImplementation::new);
+            
+        resolve(Bar.class)
+            .with(BarImplementation::new);
+        
+        resolve(Quz.class)
+            .with(QuzImplementation::new);
+    }
+});
+
+facade.resolve(ToBeInjected.class);
 ```
 
 **IMPORTANT**: If you are using lambda operators to resolve the class **ToBeInjected** you'll need to explicit inject the dependencies into it:
@@ -150,7 +163,7 @@ public class FooScenario extends Scenario {
         resolve(ToBeInjected.class).with( () -> {
             ToBeInjected tbi = new ToBeInjected();
             injectInto(tbi); //foo, bar and quz are injected here
-            tobe.doSomeStuff();
+            tbi.doSomeStuff();
             return tbi;
         });
     }
