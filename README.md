@@ -160,6 +160,8 @@ facade.resolve(ToBeInjected.class);
 public class FooScenario extends Scenario {
     @Override
     protected void setResolutions() {
+        // resolution to FOO, Bar and Quz ommited for brevity
+    
         resolve(ToBeInjected.class).with( () -> {
             ToBeInjected tbi = new ToBeInjected();
             injectInto(tbi); //foo, bar and quz are injected here
