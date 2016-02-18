@@ -36,7 +36,7 @@ public class MyScenarioImplementation  extends Scenario{
         // Obs: Different instances
         // assertNotSame(facade.resolve(FooInterface.class), facade.resolve(FooInterface.class));
         
-        //Complex solution
+        //Complex resolution
         resolve(BarInterface.class).with(
             () -> {
                 BarImplementation bar = new BarImplementation();
@@ -46,7 +46,7 @@ public class MyScenarioImplementation  extends Scenario{
             }
         );
         
-        //Singleton solution
+        //Singleton resolution
         resolveSingle(QuxInterface.class).with(QuxImplementation::new);
         // Obs: Same instance
         // assertSame(facade.resolve(QuxInterface.class), facade.resolve(QuxInterface.class));
@@ -68,8 +68,97 @@ public class MyScenarioImplementation  extends Scenario{
 
 ```
 
-## What to do next...
+###Auto-resolution
 
-* Support @Inject annotation
-* ~~Implement an interface a little bit more fluid~~
-* ~~Support for different configuration scenarios~~
+If the container is asked to resolve a class/interface and can't find a resolver it will try one of the following:
+
+* Find a default constructor and instantiate the object; or
+* Find a constructor with parameter(s) it can resolve and instantiatethe object; or
+* Thrown LambdaContainerException(unchecked).
+
+So you can have something like this:
+
+```java
+public interface Simple {}
+
+public class SimpleImplementation implements Simple{
+    public Simple() {
+    //(...)
+    }
+}
+
+public class Composed {
+    public Composed(SimpleImplementation simple) {
+    //(...)
+    }
+}
+
+public class ComposedWithInterface {
+    public ComposedWithInterface(Simple simple) {
+    //(...)
+    }
+}
+
+//1 - will work. No need to define a scenario
+facade.resolve(SimpleImplementation.class); 
+//2 - will work. No need to define a scenario
+facade.resolve(Composed.class); //will work. No need to define a scenario
+//3 - will not work! Define a resolution for Simple.class first! 
+facade.resolve(ComposedWithInterface.class); 
+```
+
+Number 3 can be arranged with :
+
+```java
+facade.setScenario(new Scenario() {
+    @Override
+    protected void setResolutions() {
+        resolve(Simple.class)
+            .with(SimpleImplementation::new);
+    }
+});
+
+facade.resolve(ComposedWithInterface.class); //now it works!
+```
+
+###@Inject annotation support
+
+There is limited support to @Inject annotation. It can be used at:
+
+* Private/Protected/Public properties
+* Public methods with one or more parameters.
+
+The class:
+
+```java
+public class ToBeInjected {
+    @Inject
+    private Foo foo;
+    //(...)
+
+    @Inject
+    public function injectHere(Bar bar, Quz quz) {//(...)}
+}
+```
+
+Can be resolved and corrected "injected into" if the container can also resolve Foo, Bar and Quz:
+
+```java
+    facade.resolve(ToBeInjected.class);
+```
+
+**IMPORTANT**: If you are using lambda operators to resolve the class **ToBeInjected** you'll need to explicit inject the dependencies into it:
+
+```java
+public class FooScenario extends Scenario {
+    @Override
+    protected void setResolutions() {
+        resolve(ToBeInjected.class).with( () -> {
+            ToBeInjected tbi = new ToBeInjected();
+            injectInto(tbi); //foo, bar and quz are injected here
+            tobe.doSomeStuff();
+            return tbi;
+        });
+    }
+}
+```
