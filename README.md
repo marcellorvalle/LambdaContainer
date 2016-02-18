@@ -9,7 +9,7 @@ I decided to use Lambda Expressions motivated by [Fabien Potencier's work](http:
 
 ##Basic functionality
 
-I ~~copied~~ got inspired by Google Guice fluid interface and decided to implement something like that. The two main classes a developer will interact are ContainerFacade and Scenario. The first one contains an entry point to the servicer provided by this API and the second should be extended to configure the container.
+I ~~copied~~ got inspired by Google Guice fluid interface and decided to implement something like that. The two main classes a developer will interact are ContainerFacade and Scenario. The first contains an entry point to the services provided by the API and the second should be extended to configure the container.
 
 ```java
 
