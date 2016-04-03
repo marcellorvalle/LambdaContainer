@@ -13,7 +13,7 @@ I ~~copied~~ got inspired by Google Guice fluid interface and decided to impleme
 
 ```java
 
-ContainerFacade cf = new ContainerService();
+ContainerFacade cf = new ContainerFacade();
 cf.setScenario(new MyScenarioImplementation());
 
 //Lazy instantiation
