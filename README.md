@@ -97,7 +97,7 @@ public class ComposedWithInterface {
 facade.resolve(SimpleImplementation.class); 
 //2 - will work. No need to define a scenario
 facade.resolve(Composed.class);
-//3 - will not work! Define a resolution for Simple.class first! 
+//3 - will not work! Define a resolution for Simple interface first! 
 facade.resolve(ComposedWithInterface.class); 
 ```
 
